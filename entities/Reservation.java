@@ -39,30 +39,34 @@ public class Reservation {
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
-    public String updateDates(Date checkIn, Date checkOut) {
+    //agora o metodo de update volta a ser void pq não retorn mais conteúdo para variável
+    // caso aconteça algum erro vamos lançar exceção, nao retornar algo!
+    public void updateDates(Date checkIn, Date checkOut) {
         Date now = new Date();
 
         // lógica de validação que permite sinalizar o erro
-        //entao se nenhuma das duas checagems forem verdadeiras o programa passa
+        //entao se nenhuma dsa duas forem verdadeiras o programa passa
         if (checkIn.before(now) || checkOut.before(now)) {
-            return "Reservation dates for update must be future dates";
+            //mudamos de return para throw
+            // a exceção IllegalArgumentException serve para quando argumentos são inválidos
+            throw new IllegalArgumentException("Reservation dates for update must be future dates");
         }
-
         // lógica de validação que permite sinalizar o erro
         // ! not
         if (!checkOut.after(checkIn)) {
-            return "Check-out date must be after check-in date";
+            throw new IllegalArgumentException("Check-out date must be after check-in date");
         }
 
         // se passar os ifs ele atualizar a data
         this.checkIn = checkIn;
         this.checkOut = checkOut;
 
-        // e entao retorna um null pra apontar que não teve erros
-        return null;
+        // não precisamos mais do return null
+
     }
 
-    public String DisplayReservation() {
+    @Override
+    public String toString() {
         return "Room "
                 + roomNumber
                 + ", check-in: "
@@ -72,7 +76,5 @@ public class Reservation {
                 + ", "
                 + duration()
                 + " nights";
-
     }
-
 }
